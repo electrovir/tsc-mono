@@ -1,9 +1,19 @@
 {
     "name": "tsc-mono",
     "version": "1.0.0",
-    "private": true,
     "description": "Super simple typescript mono-repo tooling.",
-    "keywords": [],
+    "keywords": [
+        "tsc",
+        "typescript",
+        "monorepo",
+        "mono",
+        "repo",
+        "mono-repo",
+        "build",
+        "npm",
+        "tooling",
+        "for each"
+    ],
     "homepage": "https://github.com/electrovir/tsc-mono",
     "bugs": {
         "url": "https://github.com/electrovir/tsc-mono/issues"
