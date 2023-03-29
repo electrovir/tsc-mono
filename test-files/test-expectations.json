@@ -1,0 +1,29 @@
+{
+    "cli": {
+        "successfully runs for-each": {
+            "stdout": ".//test-files/augment-vir/packages/common\n.//test-files/augment-vir/packages/testing\n.//test-files/augment-vir/packages/browser-testing\n.//test-files/augment-vir/packages/chai\n.//test-files/augment-vir/packages/browser\n.//test-files/augment-vir/packages/element-vir\n.//test-files/augment-vir/packages/node-js\n.//test-files/augment-vir/packages/common-tests\n.//test-files/augment-vir/packages/docker\n.//test-files/augment-vir/packages/prisma-node-js\n.//test-files/augment-vir/packages/scripts\n",
+            "stderr": "",
+            "exitCode": "0"
+        },
+        "errors if one of the scripts fails": {
+            "stdout": ".//test-files/augment-vir/packages/common\n.//test-files/augment-vir/packages/testing\n.//test-files/augment-vir/packages/browser-testing\n",
+            "stderr": "Command failed: npm run --silent tsc-mono-test:one-failure\n",
+            "exitCode": "1"
+        },
+        "errors if the projects dir is invalid": {
+            "stdout": "",
+            "stderr": "ENOENT: no such file or directory, scandir './/test-files/augment-vir/not-a-real-dir'\n",
+            "exitCode": "1"
+        },
+        "errors if the given command is invalid": {
+            "stdout": "",
+            "stderr": "Unknown 'tsc-mono' command given: 'fake-command'\n",
+            "exitCode": "1"
+        },
+        "errors if no inputs are given to for-each": {
+            "stdout": "",
+            "stderr": "No inputs were given to the for-each command.\n",
+            "exitCode": "1"
+        }
+    }
+}
