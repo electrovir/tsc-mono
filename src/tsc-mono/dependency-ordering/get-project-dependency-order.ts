@@ -25,16 +25,36 @@ export async function getProjectDependencyOrder(startDirPath: string): Promise<s
     const projectPaths = projectDirNames.map((projectDirName) =>
         join(startDirPath, projectDirName),
     );
+
     const projectDependencies = cruise(projectPaths, {
         doNotFollow: {
+            // don't follow anything
             dependencyTypes: [
+                'aliased',
+                'core',
+                'deprecated',
+                'local',
+                'localmodule',
                 'npm',
+                'npm-bundled',
                 'npm-dev',
+                'npm-no-pkg',
                 'npm-optional',
                 'npm-peer',
-                'npm-bundled',
+                'npm-unknown',
+                'undetermined',
+                'unknown',
+                'type-only',
             ],
         },
+        tsPreCompilationDeps: true,
+        enhancedResolveOptions: {
+            extensions: [
+                '.ts',
+                '.tsx',
+            ],
+        },
+        moduleSystems: ['es6'],
     });
 
     if (typeof projectDependencies.output === 'string') {

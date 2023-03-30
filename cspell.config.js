@@ -7,7 +7,8 @@ module.exports = {
     ],
     words: [
         ...baseConfig.words,
-        'scandir',
         'bazel',
+        'localmodule',
+        'scandir',
     ],
 };

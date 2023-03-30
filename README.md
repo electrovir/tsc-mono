@@ -2,6 +2,8 @@
 
 Super simple typescript mono-repo tooling.
 
+It is recommended that you use at least TypeScript v5 as TypeScript v4 is significantly slower.
+
 ## Features
 
 -   runs commands for each TS project in correct order based on the projects' dependency graph
