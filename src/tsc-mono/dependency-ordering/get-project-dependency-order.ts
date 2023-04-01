@@ -1,17 +1,21 @@
 import {cruise} from 'dependency-cruiser';
-import {join, relative, resolve, sep} from 'path/posix';
-import {getProjectNames} from './get-project-names';
+import {join, relative, resolve} from 'path/posix';
+import {getProjects} from './get-project-names';
 import {createFlattenedTree} from './string-tree/string-tree';
 
-export async function getProjectDependencyOrder(startDirPath: string): Promise<string[]> {
-    const projects = await getProjectNames(startDirPath);
-    const projectDirNames = projects.map((project) => project.dirName);
+export async function getProjectDependencyOrder(cwd: string): Promise<string[]> {
+    const projects = await getProjects(cwd);
+    const projectDirPaths = projects.map((project) => join(cwd, project.dirRelativePath));
+    const projectDirPathSet = new Set(projectDirPaths);
     const projectsByDirName = Object.fromEntries(
         projects.map((project) => [
-            project.dirName,
+            project.dirRelativePath,
             project,
         ]),
     );
+
+    const projectNpmNames = projects.map((project) => project.npmName);
+    const projectNpmNameSet = new Set(projectNpmNames);
     const projectsByNpmName = Object.fromEntries(
         projects.map((project) => [
             project.npmName,
@@ -19,14 +23,7 @@ export async function getProjectDependencyOrder(startDirPath: string): Promise<s
         ]),
     );
 
-    const projectNpmNames = projects.map((project) => project.npmName);
-    const projectNpmNameSet = new Set(projectNpmNames);
-
-    const projectPaths = projectDirNames.map((projectDirName) =>
-        join(startDirPath, projectDirName),
-    );
-
-    const projectDependencies = cruise(projectPaths, {
+    const projectDependencies = cruise(projectDirPaths, {
         doNotFollow: {
             // don't follow anything
             dependencyTypes: [
@@ -69,24 +66,39 @@ export async function getProjectDependencyOrder(startDirPath: string): Promise<s
     );
     projectDependencies.output.modules.forEach((moduleEntry) => {
         const fullSourcePath = resolve(moduleEntry.source);
-        const relativePath = relative(startDirPath, fullSourcePath);
-        const moduleProjectDirName = relativePath.split(sep)[0] ?? '';
+        const relevantProjectPath = findRelevantProject(projectDirPaths, fullSourcePath);
 
-        if (!moduleProjectDirName.startsWith('.')) {
-            const moduleProjectNpmName = projectsByDirName[moduleProjectDirName]!.npmName;
+        if (relevantProjectPath) {
+            const relativeProjectPath = relative(cwd, relevantProjectPath);
+            const relevantProject = projectsByDirName[relativeProjectPath];
+            if (!relevantProject) {
+                throw new Error(`Failed to find project by relative path '${relativeProjectPath}'`);
+            }
+            const moduleProjectNpmName = relevantProject.npmName;
             moduleEntry.dependencies.forEach((dep) => {
                 if (projectNpmNameSet.has(dep.module)) {
                     relevantDeps[moduleProjectNpmName]!.add(dep.module);
                 }
             });
         }
-
-        return relativePath;
     });
 
     const treeMatrix = createFlattenedTree(relevantDeps);
     const flattenedDeps = treeMatrix.flat();
 
-    const depsByDirName = flattenedDeps.map((npmName) => projectsByNpmName[npmName]!.dirName);
+    const depsByDirName = flattenedDeps.map(
+        (npmName) => projectsByNpmName[npmName]!.dirRelativePath,
+    );
     return depsByDirName;
+}
+
+function findRelevantProject(
+    projectFullPaths: ReadonlyArray<string>,
+    modulePath: string,
+): string | undefined {
+    const relevantProjectPath = projectFullPaths.find(
+        (projectFullPath) => !relative(projectFullPath, modulePath).startsWith('.'),
+    );
+
+    return relevantProjectPath;
 }

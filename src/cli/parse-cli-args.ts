@@ -27,22 +27,18 @@ export function parseArgs(args: ReadonlyArray<string>, cliFileName: string): Tsc
         .slice(commandStartIndex + 1)
         .filter((arg) => arg !== noHelpFlag);
 
-    if (!commandInputs[0]) {
-        throw new Error(`Found no <projects-parent-path> input.`);
+    const commandInput = commandInputs[0];
+
+    if (!isEnumValue(commandInput, TscMonoCommandEnum)) {
+        throw new Error(`Unknown '${tscMonoBinName}' command given: '${commandInput}'`);
     }
 
-    const projectsParentPath = resolve(commandInputs[0]);
-
-    if (!isEnumValue(commandInputs[1], TscMonoCommandEnum)) {
-        throw new Error(`Unknown '${tscMonoBinName}' command given: '${commandInputs[1]}'`);
-    }
-
-    const currentCliCommand: TscMonoCommandEnum = commandInputs[1];
-    const cliCommandInputs: ReadonlyArray<string> = commandInputs.slice(2);
+    const currentCliCommand: TscMonoCommandEnum = commandInput;
+    const cliCommandInputs: ReadonlyArray<string> = commandInputs.slice(1);
 
     return {
-        projectsParentPath: projectsParentPath,
         command: currentCliCommand,
         commandInputs: cliCommandInputs,
+        cwd: process.cwd(),
     };
 }

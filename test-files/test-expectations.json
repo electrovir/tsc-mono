@@ -10,11 +10,6 @@
             "stderr": "Command failed: npm run --silent tsc-mono-test:one-failure\n",
             "exitCode": "1"
         },
-        "errors if the projects dir is invalid": {
-            "stdout": "",
-            "stderr": "ENOENT: no such file or directory, scandir './/test-files/augment-vir/not-a-real-dir'\n",
-            "exitCode": "1"
-        },
         "errors if the given command is invalid": {
             "stdout": "",
             "stderr": "Unknown 'tsc-mono' command given: 'fake-command'\n",

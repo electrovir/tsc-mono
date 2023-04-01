@@ -7,6 +7,7 @@ It is recommended that you use at least TypeScript v5 as TypeScript v4 is signif
 ## Features
 
 -   runs commands for each TS project in correct order based on the projects' dependency graph
+-   relies on `package.json`'s `workspaces` property: no need to duplicate this information
 -   [TSConfig reference paths](https://www.typescriptlang.org/docs/handbook/project-references.html) are not required
 -   [TSConfig option `composite`](https://www.typescriptlang.org/tsconfig#composite) is not required
 -   [TSConfig option `declarationMap`](https://www.typescriptlang.org/tsconfig#declarationMap) is not required
@@ -27,10 +28,9 @@ npm i tsc-mono
 It is recommended to first setup [npm workspaces](https://docs.npmjs.com/cli/using-npm/workspaces) (if you use npm) as you must use package name imports to import between each in-repo TS project.
 
 ```bash
-tsc-mono <projects-parent-path> <command> <command-inputs>
+tsc-mono <command> <command-inputs>
 ```
 
--   `<projects-parent-path>`: the parent directory of all your TS projects.
 -   `<command>`: the `tsc-mono` command you wish to run.
 -   `<command-inputs>`: inputs to the `tsc-mono` command in the bullet above. Currently there is only one command: `for-each`.
 
@@ -42,11 +42,11 @@ Examples:
 
 -   run type checking for each TS project:
     ```bash
-    npx tsc-mono packages for-each tsc --noEmit
+    npx tsc-mono for-each tsc --noEmit
     ```
 -   run "npm start" for each TS project:
     ```bash
-    npx tsc-mono packages for-each npm start
+    npx tsc-mono for-each npm start
     ```
 
 ## Full Example
@@ -60,9 +60,8 @@ Help message from the CLI:
 ```
 tsc-mono usage:
 
-tsc-mono <projects-parent-path> <command> <command-inputs>
+tsc-mono <command> <command-inputs>
 
-    - <projects-parent-path>: path from the cwd to the immediate parent of all the mono-repo's TS projects. Example: "packages"
     - <command>: command that you want tsc-mono to run with this TS projects. Example: "for-each"
     - <command-inputs>: inputs for the given command. The options here will vary by command. Example: "npm run build"
 
@@ -73,7 +72,7 @@ for-each
     - projects are executed in dependency order
 
     Examples:
-        - tsc-mono packages for-each npm run build
-        - tsc-mono packages for-each "npm run build && echo success"
+        - tsc-mono for-each npm run build
+        - tsc-mono for-each "npm run build && echo success"
 
 ```

@@ -1,6 +1,6 @@
 {
     "name": "tsc-mono",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "description": "Super simple typescript mono-repo tooling.",
     "keywords": [
         "tsc",

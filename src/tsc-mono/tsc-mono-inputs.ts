@@ -1,7 +1,7 @@
 import {TscMonoCommandEnum} from './tsc-mono-commands';
 
 export type TscMonoInputs = {
-    projectsParentPath: string;
+    cwd: string;
     command: TscMonoCommandEnum;
     commandInputs: ReadonlyArray<string>;
 };

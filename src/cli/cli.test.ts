@@ -31,35 +31,28 @@ describe('cli', () => {
                 it: 'successfully runs for-each',
                 inputs: [
                     testRepos['augment-vir'],
-                    'packages for-each npm run --silent tsc-mono-test:success',
+                    'for-each npm run --silent tsc-mono-test:success',
                 ],
             },
             {
                 it: 'errors if one of the scripts fails',
                 inputs: [
                     testRepos['augment-vir'],
-                    'packages for-each npm run --silent tsc-mono-test:one-failure',
-                ],
-            },
-            {
-                it: 'errors if the projects dir is invalid',
-                inputs: [
-                    testRepos['augment-vir'],
-                    'not-a-real-dir for-each npm run --silent tsc-mono-test:success',
+                    'for-each npm run --silent tsc-mono-test:one-failure',
                 ],
             },
             {
                 it: 'errors if the given command is invalid',
                 inputs: [
                     testRepos['augment-vir'],
-                    'packages fake-command npm run --silent tsc-mono-test:success',
+                    'fake-command npm run --silent tsc-mono-test:success',
                 ],
             },
             {
                 it: 'errors if no inputs are given to for-each',
                 inputs: [
                     testRepos['augment-vir'],
-                    'packages for-each',
+                    'for-each',
                 ],
             },
         ],

@@ -1,56 +1,55 @@
 import {itCases} from '@augment-vir/chai';
-import {join} from 'path';
 import {testRepos} from '../../test-helpers/file-paths.test-helper';
-import {getProjectNames} from './get-project-names';
+import {getProjects} from './get-project-names';
 
-describe(getProjectNames.name, () => {
-    itCases(getProjectNames, [
+describe(getProjects.name, () => {
+    itCases(getProjects, [
         {
             it: 'gets only typescript project directories',
-            input: join(testRepos['augment-vir'], 'packages'),
+            input: testRepos['augment-vir'],
             expect: [
                 {
-                    dirName: 'browser',
+                    dirRelativePath: 'packages/browser',
                     npmName: '@augment-vir/browser',
                 },
                 {
-                    dirName: 'browser-testing',
+                    dirRelativePath: 'packages/browser-testing',
                     npmName: '@augment-vir/browser-testing',
                 },
                 {
-                    dirName: 'chai',
+                    dirRelativePath: 'packages/chai',
                     npmName: '@augment-vir/chai',
                 },
                 {
-                    dirName: 'common',
+                    dirRelativePath: 'packages/common',
                     npmName: '@augment-vir/common',
                 },
                 {
-                    dirName: 'common-tests',
+                    dirRelativePath: 'packages/common-tests',
                     npmName: '@augment-vir/common-tests',
                 },
                 {
-                    dirName: 'docker',
+                    dirRelativePath: 'packages/docker',
                     npmName: '@augment-vir/docker',
                 },
                 {
-                    dirName: 'element-vir',
+                    dirRelativePath: 'packages/element-vir',
                     npmName: '@augment-vir/element-vir',
                 },
                 {
-                    dirName: 'node-js',
+                    dirRelativePath: 'packages/node-js',
                     npmName: '@augment-vir/node-js',
                 },
                 {
-                    dirName: 'prisma-node-js',
+                    dirRelativePath: 'packages/prisma-node-js',
                     npmName: '@augment-vir/prisma-node-js',
                 },
                 {
-                    dirName: 'scripts',
+                    dirRelativePath: 'packages/scripts',
                     npmName: '@augment-vir/scripts',
                 },
                 {
-                    dirName: 'testing',
+                    dirRelativePath: 'packages/testing',
                     npmName: '@augment-vir/testing',
                 },
             ],

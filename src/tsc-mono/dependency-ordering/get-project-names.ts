@@ -1,25 +1,29 @@
-import {readPackageJson} from '@augment-vir/node-js';
+import {readPackageJson, runShellCommand} from '@augment-vir/node-js';
 import {existsSync} from 'fs';
-import {readdir} from 'fs/promises';
 import {join} from 'path';
+import {TypeScriptNpmProject} from './ts-project';
 
-export type TypeScriptNpmProject = {
-    dirName: string;
-    npmName: string;
-};
+async function getWorkspacePaths(cwd: string): Promise<string[]> {
+    const queryOutput = await runShellCommand('npm query .workspace', {
+        cwd,
+        rejectOnError: true,
+    });
 
-export async function getProjectNames(startDirPath: string): Promise<TypeScriptNpmProject[]> {
-    const childFullNames = await readdir(startDirPath);
+    return (JSON.parse(queryOutput.stdout) as any[]).map((entry) => entry.location);
+}
 
-    const tsProjectChildNames = childFullNames
-        .filter((childName) => {
-            return existsSync(join(startDirPath, childName, 'tsconfig.json'));
+export async function getProjects(cwd: string): Promise<TypeScriptNpmProject[]> {
+    const workspacePaths = await getWorkspacePaths(cwd);
+
+    const tsProjectChildPaths = workspacePaths
+        .filter((childPath) => {
+            return existsSync(join(cwd, childPath, 'tsconfig.json'));
         })
         .sort();
 
     const projects: TypeScriptNpmProject[] = await Promise.all(
-        tsProjectChildNames.map(async (childName): Promise<TypeScriptNpmProject> => {
-            const projectPath = join(startDirPath, childName);
+        tsProjectChildPaths.map(async (childPath): Promise<TypeScriptNpmProject> => {
+            const projectPath = join(cwd, childPath);
             const packageJson = await readPackageJson(projectPath);
             const packageName = packageJson.name;
 
@@ -29,7 +33,7 @@ export async function getProjectNames(startDirPath: string): Promise<TypeScriptN
 
             return {
                 npmName: packageName,
-                dirName: childName,
+                dirRelativePath: childPath,
             };
         }),
     );
