@@ -1,5 +1,6 @@
 import {awaitedForEach} from '@augment-vir/common';
-import {runShellCommand} from '@augment-vir/node-js';
+import {log, runShellCommand} from '@augment-vir/node-js';
+import {join} from 'path';
 import {tscMonoPackageName} from '../package-names';
 import {getProjectDependencyOrder} from './dependency-ordering/get-project-dependency-order';
 import {TscMonoCommandEnum} from './tsc-mono-commands';
@@ -16,9 +17,10 @@ export async function runTscMono({command, commandInputs, cwd}: TscMonoInputs) {
         }
 
         await awaitedForEach(dependencyOrdering, async (projectDirPath) => {
+            log.faint(`${projectDirPath} > ${shellCommand}`);
             await runShellCommand(shellCommand, {
                 rejectOnError: true,
-                cwd: projectDirPath,
+                cwd: join(cwd, projectDirPath),
                 hookUpToConsole: true,
             });
         });
