@@ -7,7 +7,7 @@
         },
         "errors if one of the scripts fails": {
             "stdout": "\u001b[90mpackages/common > npm run --silent tsc-mono-test:one-failure\u001b[0m\n.//test-files/augment-vir/packages/common\n\u001b[90mpackages/testing > npm run --silent tsc-mono-test:one-failure\u001b[0m\n.//test-files/augment-vir/packages/testing\n\u001b[90mpackages/browser-testing > npm run --silent tsc-mono-test:one-failure\u001b[0m\n.//test-files/augment-vir/packages/browser-testing\n\u001b[90mpackages/chai > npm run --silent tsc-mono-test:one-failure\u001b[0m\n",
-            "stderr": "Command failed: npm run --silent tsc-mono-test:one-failure\n",
+            "stderr": "",
             "exitCode": "1"
         },
         "errors if the given command is invalid": {

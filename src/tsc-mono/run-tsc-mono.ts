@@ -1,6 +1,7 @@
 import {awaitedForEach} from '@augment-vir/common';
 import {log, runShellCommand} from '@augment-vir/node-js';
 import {join} from 'path';
+import {UserCommandFailedError} from '../cli/user-command-failed.error';
 import {tscMonoPackageName} from '../package-names';
 import {getProjectDependencyOrder} from './dependency-ordering/get-project-dependency-order';
 import {TscMonoCommandEnum} from './tsc-mono-commands';
@@ -18,11 +19,15 @@ export async function runTscMono({command, commandInputs, cwd}: TscMonoInputs) {
 
         await awaitedForEach(dependencyOrdering, async (projectDirPath) => {
             log.faint(`${projectDirPath} > ${shellCommand}`);
-            await runShellCommand(shellCommand, {
-                rejectOnError: true,
-                cwd: join(cwd, projectDirPath),
-                hookUpToConsole: true,
-            });
+            try {
+                await runShellCommand(shellCommand, {
+                    rejectOnError: true,
+                    cwd: join(cwd, projectDirPath),
+                    hookUpToConsole: true,
+                });
+            } catch (error) {
+                throw new UserCommandFailedError();
+            }
         });
     } else {
         throw new Error(`Command '${command}' is not yet implemented in '${tscMonoPackageName}'.`);
